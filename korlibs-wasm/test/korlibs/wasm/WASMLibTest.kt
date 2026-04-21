@@ -78,6 +78,64 @@ class WASMLibTest {
     }
 
     @Test
+    fun testWriteShortsAndReadShorts() = suspendTest {
+        if (!ADDER.isAvailable) return@suspendTest
+        val adder = ADDER.also { it.initOnce(coroutineContext) }
+        val shorts = shortArrayOf(1, -1, 32767, -32768, 0)
+        adder.writeShorts(0, shorts)
+        val result = adder.readShorts(0, shorts.size)
+        assertContentEquals(shorts, result)
+    }
+
+    @Test
+    fun testWriteIntsAndReadInts() = suspendTest {
+        if (!ADDER.isAvailable) return@suspendTest
+        val adder = ADDER.also { it.initOnce(coroutineContext) }
+        val ints = intArrayOf(0, 1, -1, Int.MAX_VALUE, Int.MIN_VALUE)
+        adder.writeInts(0, ints)
+        val result = adder.readInts(0, ints.size)
+        assertContentEquals(ints, result)
+    }
+
+    @Test
+    fun testReadShortsEmpty() = suspendTest {
+        if (!ADDER.isAvailable) return@suspendTest
+        val adder = ADDER.also { it.initOnce(coroutineContext) }
+        val result = adder.readShorts(0, 0)
+        assertEquals(0, result.size)
+    }
+
+    @Test
+    fun testReadIntsEmpty() = suspendTest {
+        if (!ADDER.isAvailable) return@suspendTest
+        val adder = ADDER.also { it.initOnce(coroutineContext) }
+        val result = adder.readInts(0, 0)
+        assertEquals(0, result.size)
+    }
+
+    @Test
+    fun testWriteShortsRoundtripValues() = suspendTest {
+        if (!ADDER.isAvailable) return@suspendTest
+        val adder = ADDER.also { it.initOnce(coroutineContext) }
+        val shorts = shortArrayOf(0x1234.toShort(), 0x5678.toShort())
+        adder.writeShorts(0, shorts)
+        val result = adder.readShorts(0, shorts.size)
+        assertEquals(0x1234.toShort(), result[0])
+        assertEquals(0x5678.toShort(), result[1])
+    }
+
+    @Test
+    fun testWriteIntsRoundtripValues() = suspendTest {
+        if (!ADDER.isAvailable) return@suspendTest
+        val adder = ADDER.also { it.initOnce(coroutineContext) }
+        val ints = intArrayOf(0x12345678, 0xABCDEF01.toInt())
+        adder.writeInts(0, ints)
+        val result = adder.readInts(0, ints.size)
+        assertEquals(0x12345678, result[0])
+        assertEquals(0xABCDEF01.toInt(), result[1])
+    }
+
+    @Test
     fun testInvokeFuncIntVariants() = suspendTest {
         if (!ADDER.isAvailable) return@suspendTest
         val adder = ADDER.also { it.initOnce(coroutineContext) }
@@ -90,7 +148,7 @@ class WASMLibTest {
     object ADDER : WASMLib(byteArrayOf(
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x0a, 0x02, 0x60, 0x02, 0x7f, 0x7f, 0x01,
         0x7f, 0x60, 0x00, 0x00, 0x03, 0x03, 0x02, 0x00, 0x01, 0x04, 0x04, 0x01, 0x70, 0x00, 0x01, 0x05,
-        0x03, 0x01, 0x00, 0x00, 0x06, 0x06, 0x01, 0x7f, 0x00, 0x41, 0x08, 0x0b, 0x07, 0x18, 0x03, 0x06,
+        0x03, 0x01, 0x00, 0x01, 0x06, 0x06, 0x01, 0x7f, 0x00, 0x41, 0x08, 0x0b, 0x07, 0x18, 0x03, 0x06,
         0x6d, 0x65, 0x6d, 0x6f, 0x72, 0x79, 0x02, 0x00, 0x05, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x01, 0x00,
         0x03, 0x61, 0x64, 0x64, 0x00, 0x00, 0x09, 0x07, 0x01, 0x00, 0x41, 0x00, 0x0b, 0x01, 0x01, 0x0a,
         0x0c, 0x02, 0x07, 0x00, 0x20, 0x00, 0x20, 0x01, 0x6a, 0x0b, 0x02, 0x00, 0x0b
