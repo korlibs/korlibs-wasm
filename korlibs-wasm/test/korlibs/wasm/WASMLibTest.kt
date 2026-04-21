@@ -15,6 +15,101 @@ class WASMLibTest {
         assertEquals(16, adder.add(7, 9))
     }
 
+    @Test
+    fun testShortArrayToByteArray() {
+        with(ADDER) {
+            val shorts = shortArrayOf(0x0102, 0x0304)
+            val bytes = shorts.toByteArray()
+            assertEquals(4, bytes.size)
+            // Little-endian: 0x0102 -> [0x02, 0x01]
+            assertEquals(0x02.toByte(), bytes[0])
+            assertEquals(0x01.toByte(), bytes[1])
+            assertEquals(0x04.toByte(), bytes[2])
+            assertEquals(0x03.toByte(), bytes[3])
+        }
+    }
+
+    @Test
+    fun testIntArrayToByteArray() {
+        with(ADDER) {
+            val ints = intArrayOf(0x01020304, 0x05060708)
+            val bytes = ints.toByteArray()
+            assertEquals(8, bytes.size)
+            // Little-endian: 0x01020304 -> [0x04, 0x03, 0x02, 0x01]
+            assertEquals(0x04.toByte(), bytes[0])
+            assertEquals(0x03.toByte(), bytes[1])
+            assertEquals(0x02.toByte(), bytes[2])
+            assertEquals(0x01.toByte(), bytes[3])
+            assertEquals(0x08.toByte(), bytes[4])
+            assertEquals(0x07.toByte(), bytes[5])
+            assertEquals(0x06.toByte(), bytes[6])
+            assertEquals(0x05.toByte(), bytes[7])
+        }
+    }
+
+    @Test
+    fun testShortArrayToByteArrayEmpty() {
+        with(ADDER) {
+            assertEquals(0, shortArrayOf().toByteArray().size)
+        }
+    }
+
+    @Test
+    fun testIntArrayToByteArrayEmpty() {
+        with(ADDER) {
+            assertEquals(0, intArrayOf().toByteArray().size)
+        }
+    }
+
+    @Test
+    fun testShortArrayToByteArraySize() {
+        with(ADDER) {
+            val original = shortArrayOf(1, -1, 32767, -32768, 0)
+            assertEquals(original.size * 2, original.toByteArray().size)
+        }
+    }
+
+    @Test
+    fun testIntArrayToByteArraySize() {
+        with(ADDER) {
+            val original = intArrayOf(0, 1, -1, Int.MAX_VALUE, Int.MIN_VALUE)
+            assertEquals(original.size * 4, original.toByteArray().size)
+        }
+    }
+
+    @Test
+    fun testInvokeFuncIntVariants() = suspendTest {
+        if (!ADDER.isAvailable) return@suspendTest
+        val adder = ADDER.also { it.initOnce(coroutineContext) }
+        assertEquals(0, adder.add(0, 0))
+        assertEquals(10, adder.add(3, 7))
+        assertEquals(-1, adder.add(-5, 4))
+    }
+
+    @Test
+    fun testStackKeepReturnsValue() = suspendTest {
+        if (!ADDER.isAvailable) return@suspendTest
+        val adder = ADDER.also { it.initOnce(coroutineContext) }
+        var executed = false
+        val result = adder.stackKeep {
+            executed = true
+            42
+        }
+        assertTrue(executed)
+        assertEquals(42, result)
+    }
+
+    @Test
+    fun testStackKeepRestoresOnException() = suspendTest {
+        if (!ADDER.isAvailable) return@suspendTest
+        val adder = ADDER.also { it.initOnce(coroutineContext) }
+        val before = adder.stackSave()
+        runCatching {
+            adder.stackKeep { throw RuntimeException("test") }
+        }
+        assertEquals(before, adder.stackSave())
+    }
+
     object ADDER : WASMLib(byteArrayOf(
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x0a, 0x02, 0x60, 0x02, 0x7f, 0x7f, 0x01,
         0x7f, 0x60, 0x00, 0x00, 0x03, 0x03, 0x02, 0x00, 0x01, 0x04, 0x04, 0x01, 0x70, 0x00, 0x01, 0x05,
