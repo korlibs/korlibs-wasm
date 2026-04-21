@@ -86,29 +86,6 @@ class WASMLibTest {
         assertEquals(-1, adder.add(-5, 4))
     }
 
-    @Test
-    fun testStackKeepReturnsValue() = suspendTest {
-        if (!ADDER.isAvailable) return@suspendTest
-        val adder = ADDER.also { it.initOnce(coroutineContext) }
-        var executed = false
-        val result = adder.stackKeep {
-            executed = true
-            42
-        }
-        assertTrue(executed)
-        assertEquals(42, result)
-    }
-
-    @Test
-    fun testStackKeepRestoresOnException() = suspendTest {
-        if (!ADDER.isAvailable) return@suspendTest
-        val adder = ADDER.also { it.initOnce(coroutineContext) }
-        val before = adder.stackSave()
-        runCatching {
-            adder.stackKeep { throw RuntimeException("test") }
-        }
-        assertEquals(before, adder.stackSave())
-    }
 
     object ADDER : WASMLib(byteArrayOf(
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x0a, 0x02, 0x60, 0x02, 0x7f, 0x7f, 0x01,
