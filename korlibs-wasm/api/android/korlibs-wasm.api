@@ -76,33 +76,33 @@ public final class korlibs/wasm/FuncWithType {
 }
 
 public abstract interface class korlibs/wasm/IWASMLib : java/lang/AutoCloseable {
-	public abstract fun allocBytes (I)I
-	public abstract fun allocBytes ([B)I
-	public abstract fun allocInts (I)I
-	public abstract fun allocInts ([I)I
-	public abstract fun freeBytes ([I)V
+	public fun allocBytes (I)I
+	public fun allocBytes ([B)I
+	public fun allocInts (I)I
+	public fun allocInts ([I)I
+	public fun freeBytes ([I)V
 	public abstract fun getContent ()[B
-	public abstract fun initOnce (Lkotlin/coroutines/CoroutineContext;)V
-	public abstract fun invokeFunc (Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;
-	public abstract fun invokeFuncFloat (Ljava/lang/String;[Ljava/lang/Object;)F
-	public abstract fun invokeFuncIndirect (I[Ljava/lang/Object;)Ljava/lang/Object;
-	public abstract fun invokeFuncInt (Ljava/lang/String;[Ljava/lang/Object;)I
-	public abstract fun invokeFuncUnit (Ljava/lang/String;[Ljava/lang/Object;)V
-	public abstract fun isAvailable ()Z
-	public abstract fun readBytes (II)[B
-	public abstract fun readInts (II)[I
-	public abstract fun readShorts (II)[S
-	public abstract fun stackAlloc (I)I
-	public abstract fun stackAllocAndWrite ([B)I
-	public abstract fun stackAllocAndWrite ([I)I
-	public abstract fun stackAllocAndWrite ([S)I
-	public abstract fun stackRestore (I)V
-	public abstract fun stackSave ()I
-	public abstract fun toByteArray ([I)[B
-	public abstract fun toByteArray ([S)[B
-	public abstract fun writeBytes (I[B)V
-	public abstract fun writeInts (I[I)V
-	public abstract fun writeShorts (I[S)V
+	public fun initOnce (Lkotlin/coroutines/CoroutineContext;)V
+	public fun invokeFunc (Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;
+	public fun invokeFuncFloat (Ljava/lang/String;[Ljava/lang/Object;)F
+	public fun invokeFuncIndirect (I[Ljava/lang/Object;)Ljava/lang/Object;
+	public fun invokeFuncInt (Ljava/lang/String;[Ljava/lang/Object;)I
+	public fun invokeFuncUnit (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun isAvailable ()Z
+	public fun readBytes (II)[B
+	public fun readInts (II)[I
+	public fun readShorts (II)[S
+	public fun stackAlloc (I)I
+	public fun stackAllocAndWrite ([B)I
+	public fun stackAllocAndWrite ([I)I
+	public fun stackAllocAndWrite ([S)I
+	public fun stackRestore (I)V
+	public fun stackSave ()I
+	public fun toByteArray ([I)[B
+	public fun toByteArray ([S)[B
+	public fun writeBytes (I[B)V
+	public fun writeInts (I[I)V
+	public fun writeShorts (I[S)V
 }
 
 public final class korlibs/wasm/IWASMLib$DefaultImpls {
@@ -226,12 +226,12 @@ public final class korlibs/wasm/WasmCode {
 }
 
 public abstract interface class korlibs/wasm/WasmCodeVisitor {
-	public abstract fun visit (Lkorlibs/wasm/WasmInstruction;Lkorlibs/wasm/WasmCodeVisitor$Context;)V
-	public abstract fun visitFuncEnd (Lkorlibs/wasm/WasmCodeVisitor$Context;)V
-	public abstract fun visitFuncStart (Lkorlibs/wasm/WasmCodeVisitor$Context;)V
-	public abstract fun visitGoto (Lkorlibs/wasm/WasmCodeVisitor$Label;Ljava/lang/Boolean;Lkorlibs/wasm/WasmCodeVisitor$Context;)V
-	public abstract fun visitGotoTable (Ljava/util/List;Lkorlibs/wasm/WasmCodeVisitor$Label;Lkorlibs/wasm/WasmCodeVisitor$Context;)V
-	public abstract fun visitLabel (Lkorlibs/wasm/WasmCodeVisitor$Label;Lkorlibs/wasm/WasmCodeVisitor$Context;)V
+	public fun visit (Lkorlibs/wasm/WasmInstruction;Lkorlibs/wasm/WasmCodeVisitor$Context;)V
+	public fun visitFuncEnd (Lkorlibs/wasm/WasmCodeVisitor$Context;)V
+	public fun visitFuncStart (Lkorlibs/wasm/WasmCodeVisitor$Context;)V
+	public fun visitGoto (Lkorlibs/wasm/WasmCodeVisitor$Label;Ljava/lang/Boolean;Lkorlibs/wasm/WasmCodeVisitor$Context;)V
+	public fun visitGotoTable (Ljava/util/List;Lkorlibs/wasm/WasmCodeVisitor$Label;Lkorlibs/wasm/WasmCodeVisitor$Context;)V
+	public fun visitLabel (Lkorlibs/wasm/WasmCodeVisitor$Label;Lkorlibs/wasm/WasmCodeVisitor$Context;)V
 }
 
 public final class korlibs/wasm/WasmCodeVisitor$Context {
@@ -485,7 +485,7 @@ public final class korlibs/wasm/WasmImport {
 }
 
 public abstract interface class korlibs/wasm/WasmInstruction {
-	public abstract fun getItype ()Lkorlibs/wasm/WasmSType;
+	public fun getItype ()Lkorlibs/wasm/WasmSType;
 	public abstract fun getOp ()Lkorlibs/wasm/WasmOp;
 }
 
